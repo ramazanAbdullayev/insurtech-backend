@@ -32,6 +32,7 @@ public class ClaimEntity {
 
     private String description;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;

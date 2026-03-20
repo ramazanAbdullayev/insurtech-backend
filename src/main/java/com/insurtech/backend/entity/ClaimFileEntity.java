@@ -3,6 +3,8 @@ package com.insurtech.backend.entity;
 import com.insurtech.backend.constants.enums.api.FileStatus;
 import com.insurtech.backend.constants.enums.api.FileType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,8 +36,10 @@ public class ClaimFileEntity {
 
     private String contentType;
 
+    @Enumerated(EnumType.STRING)
     private FileStatus status;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime uploadedAt;
