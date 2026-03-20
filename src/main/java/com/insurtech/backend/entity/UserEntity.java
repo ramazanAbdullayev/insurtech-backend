@@ -3,6 +3,8 @@ package com.insurtech.backend.entity;
 import com.insurtech.backend.constants.enums.api.UserRole;
 import com.insurtech.backend.constants.enums.api.UserStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +29,21 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @Builder.Default
     private LocalDateTime registeredAt = LocalDateTime.now();
 }
