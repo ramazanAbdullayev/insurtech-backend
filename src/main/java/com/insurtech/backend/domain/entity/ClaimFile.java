@@ -1,7 +1,7 @@
-package com.insurtech.backend.entity;
+package com.insurtech.backend.domain.entity;
 
-import com.insurtech.backend.constants.enums.api.UserRole;
-import com.insurtech.backend.constants.enums.api.UserStatus;
+import com.insurtech.backend.domain.enums.FileStatus;
+import com.insurtech.backend.domain.enums.FileType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,26 +24,25 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class UserEntity {
+@Table(name = "claim_file")
+public class ClaimFile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String firstName;
+    private UUID claimId;
 
-    private String lastName;
+    private FileType type;
 
-    private String email;
-
-    private String passwordHash;
+    private String contentType;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private FileStatus status;
 
     @Builder.Default
-    private LocalDateTime registeredAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    private LocalDateTime uploadedAt;
+
+    private LocalDateTime updatedAt;
 }

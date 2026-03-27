@@ -1,10 +1,10 @@
 package com.insurtech.backend.service;
 
-import com.insurtech.backend.dto.api.request.LoginRequestDto;
-import com.insurtech.backend.dto.api.request.RegistrationRequestDto;
-import com.insurtech.backend.dto.api.response.AuthResponseDto;
+import com.insurtech.backend.dto.api.request.LoginRequest;
+import com.insurtech.backend.dto.api.request.RegisterRequest;
+import com.insurtech.backend.dto.api.response.AuthResponse;
 
 public interface AuthService {
-    void register(RegistrationRequestDto request);
-    AuthResponseDto login(LoginRequestDto request);
+    void register(RegisterRequest request);
+    AuthResponse login(LoginRequest request);
 }

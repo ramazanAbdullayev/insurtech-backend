@@ -1,4 +1,4 @@
-package com.insurtech.backend.constants.enums.api;
+package com.insurtech.backend.domain.enums;
 
 public enum FileStatus {
     UPLOADED, FAILED, DELETED

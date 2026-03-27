@@ -2,12 +2,39 @@ spring:
   application:
     name: backend
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/insurtech_db
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   cloud:
     aws:
       s3:
         bucket: insurtech-claim-file-bucket
       region:
         static: eu-central-1
-      credentials: # Specify only for local running to get access to AWS
+      credentials:       # Specify only for local running to get access to AWS
         access-key: ${AWS_ACCESS_KEY_ID}
         secret-key: ${AWS_SECRET_ACCESS_KEY}
+
+  auth:
+    jwt:
+      issuer: ${JWT_ISSUER:https://auth.example.com}
+      audience: ${JWT_AUDIENCE:api}
+      access-token-ttl-seconds: ${ACCESS_TOKEN_TTL:900}       # 15 min
+      refresh-token-ttl-days: ${REFRESH_TOKEN_TTL_DAYS:7}
+      private-key-base64: ${JWT_PRIVATE_KEY}
+      public-key-base64: ${JWT_PUBLIC_KEY}
+
+    public-paths:
+      - /auth/register
+      - /auth/login
+      - /auth/refresh
+      - /actuator/health

@@ -1,10 +1,6 @@
-package com.insurtech.backend.entity;
+package com.insurtech.backend.domain.entity;
 
-import com.insurtech.backend.constants.enums.api.FileStatus;
-import com.insurtech.backend.constants.enums.api.FileType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,25 +20,20 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "claim_file")
-public class ClaimFileEntity {
+@Table(name = "claim")
+public class Claim {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID claimId;
+    private UUID claimNumber;
 
-    private FileType type;
+    private UUID userId;
 
-    private String contentType;
-
-    @Enumerated(EnumType.STRING)
-    private FileStatus status;
+    private String description;
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    private LocalDateTime uploadedAt;
 
     private LocalDateTime updatedAt;
 }

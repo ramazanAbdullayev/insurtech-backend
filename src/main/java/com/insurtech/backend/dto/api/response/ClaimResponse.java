@@ -1,3 +1,3 @@
 package com.insurtech.backend.dto.api.response;
 
-public record ClaimFileResponseDto() {}
+public record ClaimResponse() {}

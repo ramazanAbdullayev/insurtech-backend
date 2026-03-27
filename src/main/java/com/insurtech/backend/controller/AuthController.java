@@ -1,9 +1,9 @@
 package com.insurtech.backend.controller;
 
 import com.insurtech.backend.constants.ApiConstants;
-import com.insurtech.backend.dto.api.request.LoginRequestDto;
-import com.insurtech.backend.dto.api.request.RegistrationRequestDto;
-import com.insurtech.backend.dto.api.response.AuthResponseDto;
+import com.insurtech.backend.dto.api.request.LoginRequest;
+import com.insurtech.backend.dto.api.request.RegisterRequest;
+import com.insurtech.backend.dto.api.response.AuthResponse;
 import com.insurtech.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +23,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @ModelAttribute RegistrationRequestDto request) {
+    public ResponseEntity<Void> register(@Valid @ModelAttribute RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(LoginRequestDto request) {
+    public ResponseEntity<AuthResponse> login(LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 }

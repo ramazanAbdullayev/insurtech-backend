@@ -32,13 +32,13 @@ build/
 ### VS Code ###
 .vscode/
 
-# Compiled class file #
+### Compiled class file ###
 *.class
 
-# log file #
+### log file #
 *.log
 
-# packege files #
+### packege files ###
 *.jar
 *.war
 *.nar
@@ -47,8 +47,8 @@ build/
 *.tar.gz
 *.rar
 
-# open-api #
+### open-api ###
 **/.openapi-generator/
 
-# .env #
+### environment variables ###
 *.env

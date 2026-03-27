@@ -1,11 +1,10 @@
 package com.insurtech.backend.service.impl;
 
-import com.insurtech.backend.constants.enums.api.UserRole;
-import com.insurtech.backend.constants.enums.api.UserStatus;
-import com.insurtech.backend.dto.api.request.LoginRequestDto;
-import com.insurtech.backend.dto.api.request.RegistrationRequestDto;
-import com.insurtech.backend.dto.api.response.AuthResponseDto;
-import com.insurtech.backend.entity.UserEntity;
+import com.insurtech.backend.domain.enums.UserStatus;
+import com.insurtech.backend.dto.api.request.LoginRequest;
+import com.insurtech.backend.dto.api.request.RegisterRequest;
+import com.insurtech.backend.dto.api.response.AuthResponse;
+import com.insurtech.backend.domain.entity.User;
 import com.insurtech.backend.exception.AlreadyExistException;
 import com.insurtech.backend.exception.InvalidCredentialsException;
 import com.insurtech.backend.repository.UserRepository;
@@ -22,11 +21,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegistrationRequestDto request) {
+    public void register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) throw new AlreadyExistException(
                     "User with this '%s' email already exist.".formatted(request.email()));
 
-        userRepository.save(UserEntity.builder()
+        userRepository.save(User.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
@@ -37,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponseDto login(LoginRequestDto request) {
+    public AuthResponse login(LoginRequest request) {
         String hashedUserPassword = userRepository.findByEmail(request.email());
         String hashedLoginPassword = request.password(); // need to be hashed
 
@@ -45,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
                 StringUtils.isEmpty(hashedUserPassword))
             throw new InvalidCredentialsException("Email or password is invalid!");
 
-        return AuthResponseDto.builder()
+        return AuthResponse.builder()
                 .token("Need to be generated !!!!! ")
                 .build();
     }
