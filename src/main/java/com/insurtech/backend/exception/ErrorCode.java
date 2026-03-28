@@ -12,7 +12,6 @@ public enum ErrorCode {
     ACCOUNT_DISABLED("Account is disabled"),
     FORBIDDEN("Access is forbidden"),
     REGISTRATION_FAILED("Registration failed"),
-
     VALIDATION_ERROR("Validation error"),
     INTERNAL_ERROR("Internal server error");
 

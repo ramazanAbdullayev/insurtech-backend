@@ -1,5 +1,6 @@
 package com.insurtech.backend.service.impl;
 
+import com.insurtech.backend.domain.enums.UserRole;
 import com.insurtech.backend.domain.enums.UserStatus;
 import com.insurtech.backend.dto.api.request.LoginRequest;
 import com.insurtech.backend.dto.api.request.RegisterRequest;
@@ -13,6 +14,8 @@ import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .role(UserRole.CLIENT)
+                .roles(Set.of(UserRole.USER))
                 .status(UserStatus.ACTIVE)
                 .passwordHash(request.password()) // need to be hashed !!!!!
                 .build());
@@ -37,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        String hashedUserPassword = userRepository.findByEmail(request.email());
+        String hashedUserPassword = userRepository.findPasswordByEmail(request.email());
         String hashedLoginPassword = request.password(); // need to be hashed
 
         if (!hashedUserPassword.equals(hashedLoginPassword) ||
