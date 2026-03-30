@@ -61,6 +61,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    // For manual validation tokens (NOT currently in use)
     public Claims validateAccessToken(String token) {
         try {
             return Jwts.parser()
