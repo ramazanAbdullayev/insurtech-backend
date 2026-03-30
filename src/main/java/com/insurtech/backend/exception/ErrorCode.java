@@ -13,6 +13,7 @@ public enum ErrorCode {
     FORBIDDEN("Access is forbidden"),
     REGISTRATION_FAILED("Registration failed"),
     VALIDATION_ERROR("Validation error"),
+    NOT_FOUND("Not found"),
     INTERNAL_ERROR("Internal server error");
 
     private final String description;

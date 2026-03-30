@@ -1,6 +1,7 @@
 package com.insurtech.backend.service.impl;
 
 import com.insurtech.backend.domain.entity.User;
+import com.insurtech.backend.exception.ErrorCode;
 import com.insurtech.backend.exception.NotFoundException;
 import com.insurtech.backend.repository.UserRepository;
 import com.insurtech.backend.security.CustomUserDetails;
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadSecurityUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User with this email: '" + email + "' not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND, "User not found. email: " + email));
         return new CustomUserDetails(user);
     }
 }
