@@ -1,7 +1,7 @@
 package com.insurtech.backend.domain.entity;
 
-import com.insurtech.backend.domain.enums.FileStatus;
-import com.insurtech.backend.domain.enums.FileType;
+import com.insurtech.backend.domain.enums.ClaimFileStatus;
+import com.insurtech.backend.domain.enums.ClaimFileType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -44,31 +44,40 @@ public class ClaimFile {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private FileType type;
+    private ClaimFileType type;
+
+    @Column(name = "file_key", nullable = false)
+    private String fileKey;
+
+    @Column(name = "original_file_name", nullable = false)
+    private String originalFilename;
+
+    @Column(name = "size", nullable = false)
+    private Long size;
 
     @Column(name = "content_type")
     private String contentType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private FileStatus status;
+    private ClaimFileStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "uploaded_at")
-    private LocalDateTime uploadedAt;
+    private Instant uploadedAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
     }
 
     @PreUpdate
     void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }

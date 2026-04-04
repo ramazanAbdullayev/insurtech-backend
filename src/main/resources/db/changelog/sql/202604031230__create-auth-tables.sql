@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id            UUID         PRIMARY KEY,
     first_name    VARCHAR(255) NOT NULL,
@@ -10,11 +10,11 @@ CREATE TABLE users
     last_login_at TIMESTAMPTZ
 );
 
-CREATE INDEX users_email_idx ON users (email);
+CREATE INDEX IF NOT EXISTS users_email_idx ON users (email);
 
 -- ============================================================
 
-CREATE TABLE user_roles
+CREATE TABLE IF NOT EXISTS user_roles
 (
     user_id UUID        NOT NULL,
     role    VARCHAR(50) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE refresh_tokens
     CONSTRAINT fk_refresh_tokens_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE INDEX rt_token_hash_idx     ON refresh_tokens (token_hash);
-CREATE INDEX rt_user_id_idx        ON refresh_tokens (user_id);
-CREATE INDEX rt_family_id_idx      ON refresh_tokens (family_id);
-CREATE INDEX rt_active_expires_idx ON refresh_tokens (expires_at) WHERE status = 'ACTIVE';
+CREATE INDEX IF NOT EXISTS rt_token_hash_idx     ON refresh_tokens (token_hash);
+CREATE INDEX IF NOT EXISTS rt_user_id_idx        ON refresh_tokens (user_id);
+CREATE INDEX IF NOT EXISTS rt_family_id_idx      ON refresh_tokens (family_id);
+CREATE INDEX IF NOT EXISTS rt_active_expires_idx ON refresh_tokens (expires_at) WHERE status = 'ACTIVE';

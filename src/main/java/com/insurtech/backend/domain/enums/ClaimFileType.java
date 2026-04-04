@@ -1,5 +1,5 @@
 package com.insurtech.backend.domain.enums;
 
-public enum FileType {
+public enum ClaimFileType {
     DOCUMENT, PHOTO
 }
