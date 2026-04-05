@@ -1,12 +1,14 @@
 package com.insurtech.backend.dto.api.response;
 
+import com.insurtech.backend.domain.enums.ClaimStatus;
+
 import java.time.Instant;
 
 public record ClaimResponse(
-        long claimNumber,
+        String claimNumber,
         String accidentType,
         String location,
         String description,
-        String status,
+        ClaimStatus status,
         Instant createdAt
 ) {}

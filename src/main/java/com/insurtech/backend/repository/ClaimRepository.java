@@ -11,5 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface ClaimRepository extends JpaRepository<Claim, UUID> {
-    Optional<List<ClaimResponse>> findAllByUserId(UUID userId);
+    Optional<List<Claim>> findAllByUserId(UUID userId);
 }

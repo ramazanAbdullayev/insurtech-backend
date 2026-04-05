@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,17 +38,17 @@ public class ClaimController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ClaimResponse>> getAll(@AuthenticationPrincipal CustomUserDetails user) {
-        return ResponseEntity.ok(claimService.getAll(user.id()));
+    public ResponseEntity<List<ClaimResponse>> getAll(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(claimService.getAll(UUID.fromString(jwt.getSubject())));
     }
 
     @PostMapping("/create")
     public ResponseEntity<ClaimResponse> create(
             @Valid @RequestPart("data") ClaimRequest data,
             @RequestPart("files") List<MultipartFile> files,
-            @AuthenticationPrincipal CustomUserDetails user
+            @AuthenticationPrincipal Jwt jwt
             ) {
-        return ResponseEntity.ok(claimService.create(user.id(), data, files));
+        return ResponseEntity.ok(claimService.create(UUID.fromString(jwt.getSubject()), data, files));
     }
 
     @DeleteMapping("/delete")

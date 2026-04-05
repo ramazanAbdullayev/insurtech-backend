@@ -29,7 +29,7 @@ public class CustomJwtAuthenticationConverter {
         if (rawRoles instanceof List<?> roles) {
             return roles.stream()
                     .filter(String.class::isInstance)
-                    .map(r -> (GrantedAuthority) new SimpleGrantedAuthority((String) r))
+                    .map(r -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + r))
                     .toList();
         }
         return List.of();

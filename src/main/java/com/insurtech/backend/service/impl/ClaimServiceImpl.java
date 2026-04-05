@@ -32,8 +32,9 @@ public class ClaimServiceImpl implements ClaimService {
     private final UserRepository userRepository;
 
     public List<ClaimResponse> getAll(UUID userId) {
-        return claimRepository.findAllByUserId(userId)
+        List<Claim> claims = claimRepository.findAllByUserId(userId)
                 .orElse(List.of());
+        return claimMapper.toResponseList(claims);
     }
 
     @Transactional
