@@ -9,5 +9,7 @@ import java.util.UUID;
 
 public interface ClaimService {
     List<ClaimResponse> getAll(UUID userId);
+    ClaimResponse getByClaimNumber(String claimNumber);
     ClaimResponse create(UUID userId, ClaimRequest data, List<MultipartFile> files);
+    void delete(String claimNumber);
 }

@@ -1,6 +1,7 @@
 package com.insurtech.backend.domain.entity;
 
 import com.insurtech.backend.domain.enums.ClaimEstimationStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,7 +38,7 @@ public class ClaimEstimation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "claim_id", nullable = false, updatable = false)
     private Claim claim;
 

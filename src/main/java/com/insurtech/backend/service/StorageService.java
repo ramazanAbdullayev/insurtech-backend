@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public interface StorageService {
 
-    void upload(Long claimNumber, MultipartFile file);
+    String upload(String claimNumber, MultipartFile file);
 
     InputStream download(String key);
 

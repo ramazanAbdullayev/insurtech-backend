@@ -14,6 +14,7 @@ public enum ErrorCode {
     REGISTRATION_FAILED("Registration failed"),
     VALIDATION_ERROR("Validation error"),
     NOT_FOUND("Not found"),
+    INVALID_VALUE("Provided value is invalid"),
     INTERNAL_ERROR("Internal server error");
 
     private final String description;

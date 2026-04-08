@@ -33,13 +33,15 @@ public class ClaimController {
     private final ClaimService claimService;
 
     @GetMapping
-    public ResponseEntity<Object> getById(@RequestParam UUID id) {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Object> getByClaimNumber(@RequestParam String claimNumber) {
+        return ResponseEntity.ok(claimService.getByClaimNumber(claimNumber));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ClaimResponse>> getAll(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(claimService.getAll(UUID.fromString(jwt.getSubject())));
+        return ResponseEntity.ok(
+                claimService.getAll(
+                        UUID.fromString(jwt.getSubject())));
     }
 
     @PostMapping("/create")
@@ -47,12 +49,17 @@ public class ClaimController {
             @Valid @RequestPart("data") ClaimRequest data,
             @RequestPart("files") List<MultipartFile> files,
             @AuthenticationPrincipal Jwt jwt
-            ) {
-        return ResponseEntity.ok(claimService.create(UUID.fromString(jwt.getSubject()), data, files));
+    ) {
+        return ResponseEntity.ok(
+                claimService.create(
+                        UUID.fromString(jwt.getSubject()),
+                        data,
+                        files));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteById() {
+    public ResponseEntity<Void> deleteByClaimNumber(@RequestParam String claimNumber) {
+        claimService.delete(claimNumber);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

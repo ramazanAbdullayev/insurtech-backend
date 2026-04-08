@@ -19,23 +19,23 @@ spring:
   cloud:
     aws:
       s3:
-        bucket: insurtech-claim-file-bucket
+        bucket: dev-insurtech-claim-file-bucket
       region:
         static: eu-central-1
-      credentials:       # Specify only for local running to get access to AWS
+      credentials: # Specify only for local running to get access to AWS
         access-key: ${AWS_ACCESS_KEY_ID}
         secret-key: ${AWS_SECRET_ACCESS_KEY}
 
   scheduler:
     auth:
-      refresh-token-clean-up: "0 0 2 * * *"
+      refresh-token-clean-up: "0 0 2 1/15 * *"
 
 auth:
   jwt:
-    issuer: ${JWT_ISSUER:https://auth.example.com}
+    issuer: ${JWT_ISSUER:https://insurtech.com}
     audience: ${JWT_AUDIENCE:api}
-    access-token-ttl-seconds: ${ACCESS_TOKEN_TTL:900}       # 15 min
-    refresh-token-ttl-days: ${REFRESH_TOKEN_TTL_DAYS:7}
+    access-token-ttl-seconds: ${ACCESS_TOKEN_TTL:900}   # 15 min
+    refresh-token-ttl-days: ${REFRESH_TOKEN_TTL_DAYS:7} # 7 days
     private-key-base64: ${JWT_PRIVATE_KEY}
     public-key-base64: ${JWT_PUBLIC_KEY}
   public-paths:

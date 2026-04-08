@@ -2,6 +2,7 @@ package com.insurtech.backend.domain.entity;
 
 import com.insurtech.backend.domain.enums.ClaimFileStatus;
 import com.insurtech.backend.domain.enums.ClaimFileType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +29,7 @@ import java.util.UUID;
 @Entity
 @Setter
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "claim_file",
@@ -38,7 +39,7 @@ public class ClaimFile {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "claim_id", nullable = false, updatable = false)
     private Claim claim;
 
