@@ -1,4 +1,3 @@
 package com.insurtech.backend.dto.api.response;
 
-public record ClaimEstimationResponse() {
-}
+public record ClaimEstimationResponse() {}

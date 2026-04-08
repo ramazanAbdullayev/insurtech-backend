@@ -13,56 +13,64 @@ import com.insurtech.backend.repository.UserRepository;
 import com.insurtech.backend.service.ClaimFileService;
 import com.insurtech.backend.service.ClaimService;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ClaimServiceImpl implements ClaimService {
 
-    private final ClaimRepository claimRepository;
-    private final ClaimMapper claimMapper;
-    private final UserRepository userRepository;
-    private final ClaimFileService claimFileService;
+  private final ClaimRepository claimRepository;
+  private final ClaimMapper claimMapper;
+  private final UserRepository userRepository;
+  private final ClaimFileService claimFileService;
 
-    public List<ClaimResponse> getAll(UUID userId) {
-        return claimMapper.toResponseList(
-                claimRepository.findAllByUserId(userId)
-                        .orElse(List.of()));
-    }
+  public List<ClaimResponse> getAll(UUID userId) {
+    return claimMapper.toResponseList(claimRepository.findAllByUserId(userId).orElse(List.of()));
+  }
 
-    public ClaimResponse getByClaimNumber(String claimNumber) {
-        return claimMapper.toResponse(
-                claimRepository.findByClaimNumber((claimNumber))
-                        .orElseThrow(() -> new NotFoundException(
-                                ErrorCode.NOT_FOUND, "Claim not found. claimNumber" + claimNumber)));
-    }
+  public ClaimResponse getByClaimNumber(String claimNumber) {
+    return claimMapper.toResponse(
+        claimRepository
+            .findByClaimNumber((claimNumber))
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        ErrorCode.NOT_FOUND, "Claim not found. claimNumber" + claimNumber)));
+  }
 
-    @Transactional
-    public ClaimResponse create(UUID userId, ClaimRequest data, List<MultipartFile> files) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND, "User not found. id: {}" + userId));
+  @Transactional
+  public ClaimResponse create(UUID userId, ClaimRequest data, List<MultipartFile> files) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(ErrorCode.NOT_FOUND, "User not found. id: {}" + userId));
 
-        Claim claim = claimMapper.toEntity(data);
-        claim.setUser(user);
-        claim.setStatus(ClaimStatus.SUBMITTED);
-        claimRepository.save(claim);
+    Claim claim = claimMapper.toEntity(data);
+    claim.setUser(user);
+    claim.setStatus(ClaimStatus.SUBMITTED);
+    claimRepository.save(claim);
 
-        claimFileService.create(claim, files);
+    claimFileService.create(claim, files);
 
-        return claimMapper.toResponse(claim);
-    }
+    return claimMapper.toResponse(claim);
+  }
 
-    @Transactional
-    public void delete(String claimNumber) {
-        Claim claim = claimRepository.findByClaimNumber(claimNumber)
-                .orElseThrow(() -> new NotFoundException(
+  @Transactional
+  public void delete(String claimNumber) {
+    Claim claim =
+        claimRepository
+            .findByClaimNumber(claimNumber)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
                         ErrorCode.NOT_FOUND, "Claim not found. claimNumber" + claimNumber));
-        claimFileService.delete(claim);
-        claimRepository.delete(claim);
-    }
+    claimFileService.delete(claim);
+    claimRepository.delete(claim);
+  }
 }

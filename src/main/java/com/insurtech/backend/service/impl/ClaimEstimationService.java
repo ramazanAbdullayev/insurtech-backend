@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ClaimEstimationService {
-    private final ClaimEstimationRepository claimEstimationRepository;
+  private final ClaimEstimationRepository claimEstimationRepository;
 }

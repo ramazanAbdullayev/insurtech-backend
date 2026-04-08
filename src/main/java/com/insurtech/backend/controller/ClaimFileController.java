@@ -1,4 +1,3 @@
 package com.insurtech.backend.controller;
 
-public class ClaimFileController {
-}
+public class ClaimFileController {}

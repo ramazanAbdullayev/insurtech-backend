@@ -3,9 +3,10 @@ package com.insurtech.backend.controller;
 import com.insurtech.backend.constants.ApiConstants;
 import com.insurtech.backend.dto.api.request.ClaimRequest;
 import com.insurtech.backend.dto.api.response.ClaimResponse;
-import com.insurtech.backend.security.CustomUserDetails;
 import com.insurtech.backend.service.ClaimService;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,46 +21,36 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.UUID;
-
 @RestController
 @RequestMapping(ClaimController.URL)
 @RequiredArgsConstructor
 public class ClaimController {
 
-    public static final String URL = ApiConstants.BASE_URL + "/claims";
+  public static final String URL = ApiConstants.BASE_URL + "/claims";
 
-    private final ClaimService claimService;
+  private final ClaimService claimService;
 
-    @GetMapping
-    public ResponseEntity<Object> getByClaimNumber(@RequestParam String claimNumber) {
-        return ResponseEntity.ok(claimService.getByClaimNumber(claimNumber));
-    }
+  @GetMapping
+  public ResponseEntity<Object> getByClaimNumber(@RequestParam String claimNumber) {
+    return ResponseEntity.ok(claimService.getByClaimNumber(claimNumber));
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ClaimResponse>> getAll(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(
-                claimService.getAll(
-                        UUID.fromString(jwt.getSubject())));
-    }
+  @GetMapping("/all")
+  public ResponseEntity<List<ClaimResponse>> getAll(@AuthenticationPrincipal Jwt jwt) {
+    return ResponseEntity.ok(claimService.getAll(UUID.fromString(jwt.getSubject())));
+  }
 
-    @PostMapping("/create")
-    public ResponseEntity<ClaimResponse> create(
-            @Valid @RequestPart("data") ClaimRequest data,
-            @RequestPart("files") List<MultipartFile> files,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        return ResponseEntity.ok(
-                claimService.create(
-                        UUID.fromString(jwt.getSubject()),
-                        data,
-                        files));
-    }
+  @PostMapping("/create")
+  public ResponseEntity<ClaimResponse> create(
+      @Valid @RequestPart("data") ClaimRequest data,
+      @RequestPart("files") List<MultipartFile> files,
+      @AuthenticationPrincipal Jwt jwt) {
+    return ResponseEntity.ok(claimService.create(UUID.fromString(jwt.getSubject()), data, files));
+  }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteByClaimNumber(@RequestParam String claimNumber) {
-        claimService.delete(claimNumber);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+  @DeleteMapping("/delete")
+  public ResponseEntity<Void> deleteByClaimNumber(@RequestParam String claimNumber) {
+    claimService.delete(claimNumber);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
 }

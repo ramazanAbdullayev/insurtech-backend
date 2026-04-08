@@ -5,15 +5,15 @@ import lombok.Getter;
 @Getter
 public class InvalidValueException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+  private final ErrorCode errorCode;
 
-    public InvalidValueException(ErrorCode errorCode) {
-        super(errorCode.getDescription());
-        this.errorCode = errorCode;
-    }
+  public InvalidValueException(ErrorCode errorCode) {
+    super(errorCode.getDescription());
+    this.errorCode = errorCode;
+  }
 
-    public InvalidValueException(ErrorCode code, String message) {
-        super(message);
-        this.errorCode = code;
-    }
+  public InvalidValueException(ErrorCode code, String message) {
+    super(message);
+    this.errorCode = code;
+  }
 }

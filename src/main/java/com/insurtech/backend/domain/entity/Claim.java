@@ -16,16 +16,15 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
 @Setter
@@ -33,65 +32,66 @@ import java.util.concurrent.ThreadLocalRandom;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "claim",
-        indexes = {
-                @Index(name = "claim_user_id_idx", columnList = "user_id"),
-                @Index(name = "claim_claim_number_idx", columnList = "claim_number")
-        })
+@Table(
+    name = "claim",
+    indexes = {
+      @Index(name = "claim_user_id_idx", columnList = "user_id"),
+      @Index(name = "claim_claim_number_idx", columnList = "claim_number")
+    })
 public class Claim {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Column(name = "claim_number", nullable = false, updatable = false, unique = true)
-    private String claimNumber;
+  @Column(name = "claim_number", nullable = false, updatable = false, unique = true)
+  private String claimNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  private User user;
 
-    @Column(name = "accident_type", nullable = false, updatable = false)
-    private String accidentType;
+  @Column(name = "accident_type", nullable = false, updatable = false)
+  private String accidentType;
 
-    @Column(name = "occurred_at", updatable = false)
-    private Instant occurredAt;
+  @Column(name = "occurred_at", updatable = false)
+  private Instant occurredAt;
 
-    @Column(name = "other_party_involved", nullable = false)
-    private boolean isOtherPartyInvolved;
+  @Column(name = "other_party_involved", nullable = false)
+  private boolean isOtherPartyInvolved;
 
-    @Column(name = "location")
-    private String location;
+  @Column(name = "location")
+  private String location;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+  @Column(name = "description", columnDefinition = "TEXT")
+  private String description;
 
-    @OneToOne(mappedBy = "claim")
-    private ClaimEstimation estimation;
+  @OneToOne(mappedBy = "claim")
+  private ClaimEstimation estimation;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private ClaimStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private ClaimStatus status;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+  @Column(name = "updated_at")
+  private Instant updatedAt;
 
-    @PrePersist
-    void onCreate() {
-        this.createdAt = Instant.now();
-        this.claimNumber = generateRandomClaimNumber();
-    }
+  @PrePersist
+  void onCreate() {
+    this.createdAt = Instant.now();
+    this.claimNumber = generateRandomClaimNumber();
+  }
 
-    @PreUpdate
-    void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
+  @PreUpdate
+  void onUpdate() {
+    this.updatedAt = Instant.now();
+  }
 
-    private String generateRandomClaimNumber() {
-        int year = LocalDate.now().getYear();
-        long random = ThreadLocalRandom.current().nextLong(100_000, 1_000_000);
-        return String.format("CLM-%d-%06d", year, random);
-    }
+  private String generateRandomClaimNumber() {
+    int year = LocalDate.now().getYear();
+    long random = ThreadLocalRandom.current().nextLong(100_000, 1_000_000);
+    return String.format("CLM-%d-%06d", year, random);
+  }
 }

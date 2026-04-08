@@ -1,4 +1,3 @@
 package com.insurtech.backend.controller;
 
-public class UserController {
-}
+public class UserController {}

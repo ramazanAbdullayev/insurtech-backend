@@ -16,62 +16,57 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.Instant;
+import java.util.Set;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.Set;
-import java.util.UUID;
-
 @Entity
-@Table(name = "users",
-        indexes = @Index(name = "users_email_idx", columnList = "email"))
+@Table(name = "users", indexes = @Index(name = "users_email_idx", columnList = "email"))
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+  @Column(name = "last_name", nullable = false)
+  private String lastName;
 
-    @Column(unique = true, nullable = false, length = 320)
-    private String email;
+  @Column(unique = true, nullable = false, length = 320)
+  private String email;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+  @Column(name = "password_hash", nullable = false)
+  private String passwordHash;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id")
-    )
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 50, nullable = false)
-    private Set<UserRole> roles;
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+  @Enumerated(EnumType.STRING)
+  @Column(name = "role", length = 50, nullable = false)
+  private Set<UserRole> roles;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)
-    private UserStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, length = 20)
+  private UserStatus status;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
-    @Column(name = "last_login_at")
-    private Instant lastLoginAt;
+  @Column(name = "last_login_at")
+  private Instant lastLoginAt;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = Instant.now();
-    }
+  @PrePersist
+  public void onCreate() {
+    this.createdAt = Instant.now();
+  }
 }

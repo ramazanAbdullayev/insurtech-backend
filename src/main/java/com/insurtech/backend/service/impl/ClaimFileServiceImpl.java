@@ -10,57 +10,57 @@ import com.insurtech.backend.repository.ClaimFileRepository;
 import com.insurtech.backend.service.ClaimFileService;
 import com.insurtech.backend.service.StorageService;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClaimFileServiceImpl implements ClaimFileService {
 
-    private final ClaimFileRepository claimFileRepository;
-    private final StorageService storageService;
+  private final ClaimFileRepository claimFileRepository;
+  private final StorageService storageService;
 
-    @Transactional
-    public void create(Claim claim, List<MultipartFile> files) {
-        if (Objects.isNull(claim) || Objects.isNull(files))
-            throw new InvalidValueException(ErrorCode.INVALID_VALUE, "Claim or files is null");
+  @Transactional
+  public void create(Claim claim, List<MultipartFile> files) {
+    if (Objects.isNull(claim) || Objects.isNull(files))
+      throw new InvalidValueException(ErrorCode.INVALID_VALUE, "Claim or files is null");
 
-        ClaimFile claimFile = ClaimFile.builder()
-                .claim(claim)
-                .status(ClaimFileStatus.PROCESSING)
-                .build();
+    ClaimFile claimFile =
+        ClaimFile.builder().claim(claim).status(ClaimFileStatus.PROCESSING).build();
 
-        for (MultipartFile file : files) {
-            log.info("UPLOADING file to storage service (S3). FILE_NAME: {}", file.getOriginalFilename());
-            String fileKey = storageService.upload(claim.getClaimNumber(), file);
-            log.info("UPLOADED file to storage service (S3). FILE_NAME: {} | FILE_KEY: {}",
-                    file.getOriginalFilename(),
-                    fileKey);
+    for (MultipartFile file : files) {
+      log.info("UPLOADING file to storage service (S3). FILE_NAME: {}", file.getOriginalFilename());
+      String fileKey = storageService.upload(claim.getClaimNumber(), file);
+      log.info(
+          "UPLOADED file to storage service (S3). FILE_NAME: {} | FILE_KEY: {}",
+          file.getOriginalFilename(),
+          fileKey);
 
-            claimFileRepository.save(claimFile.toBuilder()
-                    .uploadedAt(Instant.now())
-                    .originalFilename(file.getOriginalFilename())
-                    .contentType(file.getContentType())
-                    .size(file.getSize())
-                    .type(ClaimFileType.PHOTO) // need to add condition to identify it is PHOTO ot DOCUMENT
-                    .fileKey(fileKey)
-                    .status(!fileKey.isEmpty() ? ClaimFileStatus.UPLOADED : ClaimFileStatus.FAILED)
-                    .build());
-        }
+      claimFileRepository.save(
+          claimFile.toBuilder()
+              .uploadedAt(Instant.now())
+              .originalFilename(file.getOriginalFilename())
+              .contentType(file.getContentType())
+              .size(file.getSize())
+              .type(
+                  ClaimFileType.PHOTO) // need to add condition to identify it is PHOTO ot DOCUMENT
+              .fileKey(fileKey)
+              .status(!fileKey.isEmpty() ? ClaimFileStatus.UPLOADED : ClaimFileStatus.FAILED)
+              .build());
     }
+  }
 
-    @Transactional
-    public void delete(Claim claim) {
-        List<ClaimFile> claimFiles = claimFileRepository.findAllByClaim(claim);
+  @Transactional
+  public void delete(Claim claim) {
+    List<ClaimFile> claimFiles = claimFileRepository.findAllByClaim(claim);
 
-        claimFileRepository.deleteAll(claimFiles);
-        claimFiles.forEach(file -> storageService.delete(file.getFileKey()));
-    }
+    claimFileRepository.deleteAll(claimFiles);
+    claimFiles.forEach(file -> storageService.delete(file.getFileKey()));
+  }
 }

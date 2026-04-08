@@ -1,5 +1,7 @@
 package com.insurtech.backend.domain.enums;
 
 public enum UserStatus {
-    ACTIVE, BLOCKED, DELETED
+  ACTIVE,
+  BLOCKED,
+  DELETED
 }

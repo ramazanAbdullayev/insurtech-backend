@@ -36,6 +36,8 @@
         <!-- Utils -->
         <jsoup.version>1.22.1</jsoup.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <google-java-format.version>1.35.0</google-java-format.version>
+        <fmt-maven-plugin.version>2.29</fmt-maven-plugin.version>
 
     </properties>
     <dependencyManagement>
@@ -126,6 +128,11 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.googlejavaformat</groupId>
+            <artifactId>google-java-format</artifactId>
+            <version>${google-java-format.version}</version>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -166,7 +173,19 @@
                     </excludes>
                 </configuration>
             </plugin>
-        </plugins>
+            <plugin>
+                <groupId>com.spotify.fmt</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>${fmt-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+    </plugins>
     </build>
 
 </project>
