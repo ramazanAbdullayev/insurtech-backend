@@ -45,3 +45,5 @@ auth:
     - /insurtech/v1/auth/register
     - /insurtech/v1/auth/login
     - /insurtech/v1/auth/refresh
+    - /swagger-ui/**
+    - /v3/api-docs/**
