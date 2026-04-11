@@ -62,10 +62,6 @@ public class AuthController {
         description = "Unexpected server error",
         content = @Content(schema = @Schema()))
   })
-  @io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description = "User registration details including name, email, and password",
-      required = true,
-      content = @Content(schema = @Schema(implementation = RegisterRequest.class)))
   @PostMapping("/register")
   public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
     authService.register(request);
@@ -97,10 +93,6 @@ public class AuthController {
         description = "Unexpected server error",
         content = @Content(schema = @Schema()))
   })
-  @io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description = "User credentials",
-      required = true,
-      content = @Content(schema = @Schema(implementation = LoginRequest.class)))
   @PostMapping("/login")
   public ResponseEntity<TokenResponse> login(
       @Valid @RequestBody LoginRequest request, HttpServletRequest httpReq) {
@@ -132,10 +124,6 @@ public class AuthController {
         description = "Unexpected server error",
         content = @Content(schema = @Schema()))
   })
-  @io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description = "The refresh token to exchange",
-      required = true,
-      content = @Content(schema = @Schema(implementation = RefreshTokenRequest.class)))
   @PostMapping("/refresh")
   public ResponseEntity<TokenResponse> refresh(
       @Valid @RequestBody RefreshTokenRequest request, HttpServletRequest httpReq) {
@@ -163,10 +151,6 @@ public class AuthController {
         description = "Unexpected server error",
         content = @Content(schema = @Schema()))
   })
-  @io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description = "The refresh token to revoke",
-      required = true,
-      content = @Content(schema = @Schema(implementation = RefreshTokenRequest.class)))
   @PostMapping("/logout")
   public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
     authService.revokeToken(request.refreshToken());

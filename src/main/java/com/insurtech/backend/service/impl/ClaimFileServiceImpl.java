@@ -70,6 +70,8 @@ public class ClaimFileServiceImpl implements ClaimFileService {
     List<ClaimFile> claimFiles = claimFileRepository.findAllByClaim(claim);
 
     claimFileRepository.deleteAll(claimFiles);
+    log.info("Claim files data have been deleted from the DB. claimNumber: {}", claim.getClaimNumber());
     claimFiles.forEach(file -> storageService.delete(file.getFileKey()));
+    log.info("Claim files have been deleted from storage service (S3). claimNumber: {}", claim.getClaimNumber());
   }
 }

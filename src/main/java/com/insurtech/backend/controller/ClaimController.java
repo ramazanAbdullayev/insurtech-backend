@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -115,7 +116,7 @@ public class ClaimController {
               + " (photos or documents). Returns the created claim on success.")
   @ApiResponses({
     @ApiResponse(
-        responseCode = "200",
+        responseCode = "201",
         description = "Claim created successfully — returns the new claim",
         content = @Content(schema = @Schema(implementation = ClaimResponse.class))),
     @ApiResponse(
@@ -131,19 +132,30 @@ public class ClaimController {
         description = "Unexpected server error",
         content = @Content(schema = @Schema()))
   })
-  @io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description =
-          "Multipart request: 'data' part contains the claim JSON payload; 'files' part"
-              + " contains one or more attachment files",
-      required = true,
-      content = @Content(schema = @Schema(implementation = ClaimRequest.class)))
   @SecurityRequirement(name = "bearerAuth")
-  @PostMapping("/create")
+  @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<ClaimResponse> create(
-      @Valid @RequestPart("data") ClaimRequest data,
-      @RequestPart("files") List<MultipartFile> files,
+      @Parameter(
+              description = "Claim JSON payload",
+              required = true,
+              content =
+                  @Content(
+                      mediaType = MediaType.APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ClaimRequest.class)))
+          @Valid
+          @RequestPart("data")
+          ClaimRequest data,
+      @Parameter(
+              description = "Supporting files (images/documents)",
+              content =
+                  @Content(
+                      mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                      schema = @Schema(type = "string", format = "binary")))
+          @RequestPart("files")
+          List<MultipartFile> files,
       @AuthenticationPrincipal Jwt jwt) {
-    return ResponseEntity.ok(claimService.create(UUID.fromString(jwt.getSubject()), data, files));
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(claimService.create(UUID.fromString(jwt.getSubject()), data, files));
   }
 
   @Operation(

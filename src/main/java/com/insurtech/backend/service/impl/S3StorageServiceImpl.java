@@ -62,7 +62,7 @@ public class S3StorageServiceImpl implements StorageService {
   public void delete(String fileKey) {
     try {
       s3Template.deleteObject(bucketName, fileKey);
-      log.info("File deleted successfully. fileKey: {}", fileKey);
+      log.info("File deleted from storage service (S3) successfully. fileKey: {}", fileKey);
     } catch (S3Exception e) {
       throw new S3DeleteException("Failed to delete file. key: " + fileKey, e);
     }

@@ -38,7 +38,7 @@ public class ClaimEstimation {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "claim_id", nullable = false, updatable = false)
   private Claim claim;
 
