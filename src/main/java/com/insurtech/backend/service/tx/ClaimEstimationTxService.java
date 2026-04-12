@@ -11,6 +11,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
@@ -101,6 +102,13 @@ public class ClaimEstimationTxService {
     claimEstimationRepository.save(job);
 
     log.warn("ESTIMATION_MARKED_FAILED | estimationId: {} | error: {}", estimationId, error);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void delete(Claim claim) {
+    log.info("DELETING | claimId {} ", claim.getId());
+    claimEstimationRepository.deleteByClaim(claim);
+    log.info("DELETED | claimId {} ", claim.getId());
   }
 
   private String serialize(AIAnalysisResponse response) {

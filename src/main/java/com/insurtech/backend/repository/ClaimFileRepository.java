@@ -4,7 +4,6 @@ import com.insurtech.backend.domain.entity.Claim;
 import com.insurtech.backend.domain.entity.ClaimFile;
 import com.insurtech.backend.dto.api.response.ClaimFileResponse;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +13,4 @@ public interface ClaimFileRepository extends JpaRepository<ClaimFile, UUID> {
   List<ClaimFile> findAllByClaim(Claim claim);
 
   List<ClaimFileResponse> findAllByClaimId(UUID claimId);
-
-  Optional<ClaimFile> findByFileKey(String fileKey);
 }

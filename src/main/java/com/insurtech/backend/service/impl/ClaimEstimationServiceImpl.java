@@ -69,6 +69,10 @@ public class ClaimEstimationServiceImpl implements ClaimEstimationService {
     if (shouldCallAI) callAI(job.getId(), claimId);
   }
 
+  public void delete(Claim claim) {
+    txService.delete(claim);
+  }
+
   private void callAI(UUID estimationId, UUID claimId) {
     List<String> imageUrls = resolveImageUrls(claimId);
 
@@ -89,13 +93,16 @@ public class ClaimEstimationServiceImpl implements ClaimEstimationService {
     } catch (RestClientResponseException ex) {
       txService.saveFailure(
           estimationId, "HTTP " + ex.getStatusCode() + " | " + ex.getResponseBodyAsString());
-      throw new AIServiceException(ErrorCode.AI_SERVICE_ERROR, "AI service error: " + ex.getMessage());
+      throw new AIServiceException(
+          ErrorCode.AI_SERVICE_ERROR, "AI service error: " + ex.getMessage());
     } catch (ResourceAccessException ex) {
       txService.saveFailure(estimationId, "Timeout / unreachable");
-      throw new AIServiceException(ErrorCode.AI_SERVICE_ERROR, "AI service unavailable: " + ex.getMessage());
+      throw new AIServiceException(
+          ErrorCode.AI_SERVICE_ERROR, "AI service unavailable: " + ex.getMessage());
     } catch (Exception ex) {
       txService.saveFailure(estimationId, ex.getMessage());
-      throw new AIServiceException(ErrorCode.AI_SERVICE_ERROR, "Something went wrong when AI call: " + ex.getMessage());
+      throw new AIServiceException(
+          ErrorCode.AI_SERVICE_ERROR, "Something went wrong when AI call: " + ex.getMessage());
     }
   }
 

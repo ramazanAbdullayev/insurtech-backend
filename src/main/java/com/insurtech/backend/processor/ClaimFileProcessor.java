@@ -38,7 +38,13 @@ public class ClaimFileProcessor {
     List<UUID> failed = new ArrayList<>();
 
     for (ClaimFile file : claimFiles) {
-      boolean success = claimFileService.delete(file);
+      boolean success = true;
+      try {
+        success = claimFileService.deleteFromStorage(file.getId());
+      } catch (Exception ex) {
+        log.error("DELETE_ERROR: {}", ex.getMessage(), ex);
+      }
+
       if (!success) {
         failed.add(file.getId());
       }

@@ -1,7 +1,6 @@
 package com.insurtech.backend.domain.entity;
 
 import com.insurtech.backend.domain.enums.ClaimStatus;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -65,9 +63,6 @@ public class Claim {
 
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
-
-  @OneToOne(mappedBy = "claim", cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private ClaimEstimation estimation;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)

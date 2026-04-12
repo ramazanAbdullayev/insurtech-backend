@@ -14,5 +14,5 @@ public interface ClaimFileService {
 
   void upload(Claim claim, MultipartFile file);
 
-  boolean delete(ClaimFile claimFile);
+  boolean deleteFromStorage(UUID claimFileId);
 }

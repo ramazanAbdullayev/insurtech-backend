@@ -12,24 +12,24 @@ import com.insurtech.backend.mapper.ClaimMapper;
 import com.insurtech.backend.processor.ClaimFileProcessor;
 import com.insurtech.backend.repository.ClaimRepository;
 import com.insurtech.backend.repository.UserRepository;
-import com.insurtech.backend.service.ClaimFileService;
 import com.insurtech.backend.service.ClaimService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClaimServiceImpl implements ClaimService {
 
   private final ClaimRepository claimRepository;
-  private final ClaimMapper claimMapper;
   private final UserRepository userRepository;
-  private final ClaimFileService claimFileService;
+  private final ClaimMapper claimMapper;
   private final ClaimFileProcessor claimFileProcessor;
   private final ApplicationEventPublisher publisher;
 
@@ -89,6 +89,9 @@ public class ClaimServiceImpl implements ClaimService {
                     new NotFoundException(
                         ErrorCode.NOT_FOUND, "Claim not found. claimNumber" + claimNumber));
     claimFileProcessor.delete(claim);
-    claimRepository.delete(claim);
+    // ON DELETE CASCADE for both ClaimEstimation and ClaimFile
+    claimRepository.deleteByIdBulk(claim.getId());
+    log.warn(
+        "Claim deleted from db, both ClaimFile, ClaimEstimation also deleted from DB, because ON DELETE CASCADE.");
   }
 }

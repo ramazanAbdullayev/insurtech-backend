@@ -1,5 +1,6 @@
 package com.insurtech.backend.repository;
 
+import com.insurtech.backend.domain.entity.Claim;
 import com.insurtech.backend.domain.entity.ClaimEstimation;
 import com.insurtech.backend.domain.enums.ClaimEstimationStatus;
 import jakarta.persistence.LockModeType;
@@ -54,4 +55,6 @@ public interface ClaimEstimationRepository extends JpaRepository<ClaimEstimation
   void insertIfAbsent(@Param("claimId") UUID claimId);
 
   Optional<ClaimEstimation> findByClaim_Id(UUID claimId);
+
+  void deleteByClaim(Claim claim);
 }

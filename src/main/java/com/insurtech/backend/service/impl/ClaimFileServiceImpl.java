@@ -15,6 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,10 +83,12 @@ public class ClaimFileServiceImpl implements ClaimFileService {
   }
 
   @Override
-  @Transactional
-  public boolean delete(ClaimFile claimFile) {
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public boolean deleteFromStorage(UUID claimFileId) {
+    ClaimFile claimFile = claimFileRepository.findById(claimFileId).orElseThrow();
+
     if (claimFile.getStatus() == ClaimFileStatus.DELETED) {
-      log.info("Claim file already deleted from storage: {}", claimFile.getId());
+      log.info("Claim file already deleted from storage and marked DELETED: {}", claimFile.getId());
       return true;
     }
 
@@ -96,21 +99,37 @@ public class ClaimFileServiceImpl implements ClaimFileService {
       return true;
     }
 
+    boolean deletedFromStorage;
     try {
       storageService.delete(claimFile.getFileKey());
-      claimFile.setStatus(ClaimFileStatus.DELETED);
-      claimFileRepository.save(claimFile);
-      return true;
+      deletedFromStorage = true;
     } catch (Exception e) {
-      claimFile.setStatus(ClaimFileStatus.FAILED_DELETE);
-      claimFileRepository.save(claimFile);
       log.error(
           "Storage deletion failed. claimFileId: {} | fileKey: {}",
           claimFile.getId(),
           claimFile.getFileKey(),
           e);
-      return false;
+      deletedFromStorage = false;
     }
+
+    if (deletedFromStorage) {
+      try {
+        claimFile.setStatus(ClaimFileStatus.DELETED);
+        claimFileRepository.save(claimFile);
+        log.info("Marked as DELETED. claimFileId: {}", claimFile.getId());
+      } catch (Exception e) {
+        log.error("Failed to mark DELETED. claimFileId: {}", claimFile.getId());
+      }
+    } else {
+      try {
+        claimFile.setStatus(ClaimFileStatus.FAILED_DELETE);
+        claimFileRepository.save(claimFile);
+      } catch (Exception ex) {
+        log.error("Failed to mark FAILED_DELETE. claimFileId: {}", claimFile.getId(), ex);
+      }
+    }
+
+    return true;
   }
 
   private ClaimFileType resolveFileType(String contentType, String filename) {
