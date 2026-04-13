@@ -1,32 +1,85 @@
+logging:
+  level:
+    root: INFO
+    com.yourcompany.myapp: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
 spring:
   application:
     name: backend
+  lifecycle:
+    timeout-per-shutdown-phase: 30s  # Grace period for graceful shutdown
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB:insurtech-db}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:insurtech-db}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      maximum-pool-size: 10       # Tune per RDS instance class
+      minimum-idle: 2
+      connection-timeout: 30000   # 30s — fail fast if pool exhausted
+      idle-timeout: 600000        # 10 min
+      max-lifetime: 1800000       # 30 min — less than RDS wait_timeout
+      leak-detection-threshold: 20000
+      connection-test-query: SELECT 1
+
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: false
+    open-in-view: false           # Avoid LazyInitializationException traps
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 50
+          order_inserts: true
+          order_updates: true
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
 
   cloud:
     aws:
       s3:
-        bucket: dev-insurtech-claim-file-bucket
+        bucket: ${S3_BUCKET}
         presigned-url:
           ttl-minutes: 30
       region:
         static: eu-central-1
-      credentials: # Specify only for local running to get access to AWS
-        access-key: ${AWS_ACCESS_KEY_ID}
-        secret-key: ${AWS_SECRET_ACCESS_KEY}
+#      credentials: # Specify only for local running to get access to AWS
+#        access-key: ${AWS_ACCESS_KEY_ID}
+#        secret-key: ${AWS_SECRET_ACCESS_KEY}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful              # Wait for in-flight requests on SIGTERM
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 5
+    connection-timeout: 20000
 
 async:
   core-pool-size: 5
@@ -57,5 +110,6 @@ auth:
     - /insurtech/v1/auth/register
     - /insurtech/v1/auth/login
     - /insurtech/v1/auth/refresh
+    - /actuator/health
     - /swagger-ui/**
     - /v3/api-docs/**

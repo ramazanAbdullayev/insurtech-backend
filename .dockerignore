@@ -1,0 +1,32 @@
+# Build output
+target/
+*.jar
+*.war
+
+# Version control
+.git
+.gitignore
+
+# IDEs and OS metadata
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.classpath
+.project
+.settings/
+
+# Documentation and local notes
+*.md
+HELP.md
+NOTES.txt
+
+# Secrets (Absolute must to ignore)
+*.env
+.env*
+*.pem
+*.aws/
+aws-credentials
+
+# Unnecessary build scripts
+mvnw.cmd

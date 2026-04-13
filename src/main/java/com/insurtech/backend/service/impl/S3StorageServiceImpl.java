@@ -41,10 +41,10 @@ public class S3StorageServiceImpl implements StorageService {
       log.info("File uploaded to storage (S3) successfully. claimNumber: {}", claimNumber);
     } catch (IOException e) {
       throw new StorageServiceException(
-          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when reading file");
+          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when reading file: " + e);
     } catch (S3Exception e) {
       throw new StorageServiceException(
-          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when uploading file");
+          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when uploading file: " + e);
     }
 
     return s3Key;
@@ -69,7 +69,7 @@ public class S3StorageServiceImpl implements StorageService {
       log.info("File deleted from storage service (S3) successfully. fileKey: {}", fileKey);
     } catch (S3Exception e) {
       throw new StorageServiceException(
-          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when deleting file");
+          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when deleting file: " + e);
     }
   }
 
@@ -80,7 +80,7 @@ public class S3StorageServiceImpl implements StorageService {
           .toString();
     } catch (S3Exception e) {
       throw new StorageServiceException(
-          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when getting presign url");
+          ErrorCode.STORAGE_SERVICE_ERROR, "Something went wrong when getting presign url: " + e);
     }
   }
 
